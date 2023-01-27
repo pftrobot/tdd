@@ -1,5 +1,7 @@
+## projecct files
 .vs
 .vscode
+.idea
 
 bin
 obj
@@ -9,4 +11,5 @@ obj
 .project
 .settings
 
+## package files
 node_modules
