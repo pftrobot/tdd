@@ -32,12 +32,46 @@ test('sut correctly works', ()=>{
 // jest parameterize 를 사용하여 위 문제 해결 가능
 // test data table 작성
 test.each`
-    source | expected
+    source | expected 
     ${"hello  world"} | ${"hello world"}
     ${"hello   world"} | ${"hello world"}
     ${"hello    world"} | ${"hello world"}
+    ${"hello     world"} | ${"hello world"}
+    ${"hello      world"} | ${"hello world"}
+    ${"hello       world"} | ${"hello world"}
 `('sut transforms "$source" to "$expected"', ({source, expected})=>{
     const actual = sut(source)
     expect(actual).toBe(expected)
+})
 
+test.each`
+    source | expected
+    ${"hello\t world"} | ${"hello world"}
+    ${"hello \tworld"} | ${"hello world"}
+`('sut transforms "$source" that contains tab character to "$expected"', ({source, expected})=>{
+    const actual = sut(source)
+    expect(actual).toBe(expected)
+})
+
+// 금지어를 지정하여 마스킹 처리(숨김)
+test.each`
+    source | bannedWords | expected
+    ${"hello mockist"} | ${["mockist", "purist"]} | ${"hello ******"}
+    ${"hello purist"} | ${["mockist", "purist"]} | ${"hello ******"}
+`('sut transforms "$source" to "$expected"', ({source, bannedWords, expected})=>{
+    const actual = sut(source, {bannedWords})
+
+    expect(actual).toBe(expected)
+})
+const faker = require("faker")
+describe('given banned word', ()=>{
+    // faker 를 사용하여 금지어 생성
+    const bannedWord = faker.lorem.word()
+    const source = "hello " + bannedWord
+    const expected = "hello " + "*".repeat(bannedWord.length)
+
+    test('${bannedWord} when invoke sut then it returns ${expected}', ()=>{
+        const actual = sut(source, {bannedWords: [bannedWord]})
+        expect(actual).toBe(expected)
+    })
 })
