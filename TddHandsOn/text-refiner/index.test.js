@@ -56,7 +56,7 @@ test.each`
 // 금지어를 지정하여 마스킹 처리(숨김)
 test.each`
     source | bannedWords | expected
-    ${"hello mockist"} | ${["mockist", "purist"]} | ${"hello ******"}
+    ${"hello mockist"} | ${["mockist", "purist"]} | ${"hello *******"}
     ${"hello purist"} | ${["mockist", "purist"]} | ${"hello ******"}
 `('sut transforms "$source" to "$expected"', ({source, bannedWords, expected})=>{
     const actual = sut(source, {bannedWords})
